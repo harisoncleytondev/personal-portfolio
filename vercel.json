@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/linkedin",
+      "destination": "https://www.linkedin.com/in/harison-cleyton-9ab7133a6",
+      "permanent": true
+    },
+    {
+      "source": "/github",
+      "destination": "https://github.com/harisoncleytondev",
+      "permanent": true
+    }
+  ]
+}
