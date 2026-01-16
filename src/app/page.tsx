@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NavbarComponent } from "./_components/navbar-component";
 import { ProjectsComponent } from "./_components/projects-component";
 import { SkillsComponent } from "./_components/skills-component";
