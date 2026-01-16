@@ -31,7 +31,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ message: "Body inválido" }, { status: 400 });
     }
 
-    const query = await prisma.project.delete({
+    const query = await prisma.skills.delete({
       where: {
         id: body.id,
       },
