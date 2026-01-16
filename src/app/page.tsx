@@ -7,10 +7,8 @@ import { CertificatesComponent } from "./_components/certificates-component";
 import { FooterComponent } from "./_components/footer-component";
 import { TitleComponent } from "./_components/title-component";
 import { prisma } from "@/lib/prisma";
-import { ensureSettings } from "@/lib/ensureSettings";
 
 const Home = async () => {
-  await ensureSettings();
   const skills = await prisma.skills.findMany();
   const projects = await prisma.project.findMany();
   const certificates = await prisma.certificates.findMany();

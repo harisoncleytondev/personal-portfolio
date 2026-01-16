@@ -1,4 +1,3 @@
-import { ensureSettings } from '@/lib/ensureSettings';
 import { prisma } from '@/lib/prisma';
 import { Settings } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';

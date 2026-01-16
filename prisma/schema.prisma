@@ -20,7 +20,7 @@ model Settings {
   instagram String   @default("username")
   linkedin  String   @default("username")
   github    String   @default("username")
-  cv        String?
+  cv        String   @default("")
   updatedAt DateTime @updatedAt
 }
 
