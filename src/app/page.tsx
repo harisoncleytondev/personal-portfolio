@@ -45,7 +45,7 @@ const Home = async () => {
 
           <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
             <a
-              href={`page-skills`}
+              href={`#page-skills`}
               className={
                 "font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
               }
