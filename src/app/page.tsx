@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+"use client";
 
 import { NavbarComponent } from "./_components/navbar-component";
 import { ProjectsComponent } from "./_components/projects-component";
@@ -6,17 +6,15 @@ import { SkillsComponent } from "./_components/skills-component";
 import { CertificatesComponent } from "./_components/certificates-component";
 import { FooterComponent } from "./_components/footer-component";
 import { TitleComponent } from "./_components/title-component";
-import { prisma } from "@/lib/prisma";
+import { useLoading } from "@/hooks/useLoading";
 
-const Home = async () => {
-  const skills = await prisma.skills.findMany();
-  const projects = await prisma.project.findMany();
-  const certificates = await prisma.certificates.findMany();
-  const settings = await prisma.settings.findFirst();
+const Home = () => {
+  const { data, isLoading } = useLoading();
 
-  if (!skills) return null;
-  if (!projects) return null;
-  if (!certificates) return null;
+  if (isLoading || !data) return null;
+
+  const { skills, projects, certificates, settings } = data;
+
   if (!settings) return null;
 
   return (
