@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    {
+      "source": "/cv",
+      "destination": "/api/download/cv"
+    }
+  ],
   "redirects": [
     {
       "source": "/linkedin",
@@ -8,6 +14,11 @@
     {
       "source": "/github",
       "destination": "https://github.com/harisoncleytondev",
+      "permanent": true
+    },
+    {
+      "source": "/whatsapp",
+      "destination": "https://wa.me/qr/7QHEQOYDKT2YP1",
       "permanent": true
     }
   ]
