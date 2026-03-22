@@ -11,11 +11,97 @@ import { useLoading } from "@/hooks/useLoading";
 const Home = () => {
   const { data, isLoading } = useLoading();
 
-  if (isLoading || !data) return null;
+  const HeroSection = () => (
+    <section
+      id="page-home"
+      className="min-h-screen flex flex-col justify-center items-center py-20 px-4 gap-8"
+    >
+      <ul className="flex gap-6 list-none mb-8 flex-wrap justify-center">
+        <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
+          <a
+            href="#page-home"
+            className="font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
+          >
+            Início
+          </a>
+        </li>
+
+        <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
+          <a
+            href="#page-skills"
+            className="font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
+          >
+            Tecnologias
+          </a>
+        </li>
+
+        <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
+          <a
+            href="#page-projects"
+            className="font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
+          >
+            Projetos
+          </a>
+        </li>
+        <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
+          <a
+            href="#page-certificates"
+            className="font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
+          >
+            Qualificações
+          </a>
+        </li>
+      </ul>
+
+      <div className="flex flex-col items-center gap-6 max-w-3xl text-center">
+        <h1 className="font-primary text-5xl md:text-6xl font-bold text-secondary">
+          <TitleComponent />
+          <span className="text-primary border-r-4 border-primary ml-1 animate-cursor-blink">
+            &nbsp;
+          </span>
+        </h1>
+
+        <p className="font-secondary text-lg md:text-xl text-primary font-normal leading-relaxed">
+          Harison, desenvolvedor frontend de 16 anos, cria interfaces web
+          intuitivas e dinâmicas. Atualmente, aprofunda seus conhecimentos em
+          Análise e Desenvolvimento de Sistemas (ADS) para construir soluções
+          web robustas e inovadoras.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 mt-8">
+          <a
+            href="#page-contact"
+            className="px-8 py-3 bg-secondary text-white font-primary font-bold rounded-full shadow-md hover:bg-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-sm flex items-center justify-center"
+          >
+            Contato
+          </a>
+
+          <a
+            href="/api/download/cv"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-3 bg-transparent border-2 border-secondary text-secondary font-primary font-bold rounded-full hover:bg-secondary hover:text-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-sm flex items-center justify-center"
+          >
+            Currículo
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+
+  if (isLoading || !data || !data.settings) {
+    return (
+      <div className="w-full min-h-screen bg-light-gray text-dark-gray transition-colors duration-300 flex flex-col">
+        <div className="h-20 w-full bg-light-gray animate-pulse"></div>
+        <HeroSection />
+        <div className="flex justify-center items-center py-20">
+          <div className="w-10 h-10 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
 
   const { skills, projects, certificates, settings } = data;
-
-  if (!settings) return null;
 
   return (
     <div className="w-full min-h-screen bg-light-gray text-dark-gray transition-colors duration-300">
@@ -25,89 +111,7 @@ const Home = () => {
         linkedin={settings.linkedin}
       />
 
-      <section
-        id="page-home"
-        className="min-h-screen flex flex-col justify-center items-center py-20 px-4 gap-8"
-      >
-        <ul className="flex gap-6 list-none mb-8 flex-wrap justify-center">
-          <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
-            <a
-              href={`#page-home`}
-              className={
-                "font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
-              }
-            >
-              Início
-            </a>
-          </li>
-
-          <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
-            <a
-              href={`#page-skills`}
-              className={
-                "font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
-              }
-            >
-              Tecnologias
-            </a>
-          </li>
-
-          <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
-            <a
-              href={`#page-projects`}
-              className={
-                "font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
-              }
-            >
-              Projetos
-            </a>
-          </li>
-          <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
-            <a
-              href={`#page-certificates`}
-              className={
-                "font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
-              }
-            >
-              Qualificações
-            </a>
-          </li>
-        </ul>
-
-        <div className="flex flex-col items-center gap-6 max-w-3xl text-center">
-          <h1 className="font-primary text-5xl md:text-6xl font-bold text-secondary">
-            <TitleComponent />
-            <span className="text-primary border-r-4 border-primary ml-1 animate-cursor-blink">
-              &nbsp;
-            </span>
-          </h1>
-
-          <p className="font-secondary text-lg md:text-xl text-primary font-normal leading-relaxed">
-            Harison, desenvolvedor frontend de 16 anos, cria interfaces web
-            intuitivas e dinâmicas. Atualmente, aprofunda seus conhecimentos em
-            Análise e Desenvolvimento de Sistemas (ADS) para construir soluções
-            web robustas e inovadoras.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <a
-              href="#page-contact"
-              className="px-8 py-3 bg-secondary text-white font-primary font-bold rounded-full shadow-md hover:bg-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-sm flex items-center justify-center"
-            >
-              Contato
-            </a>
-
-            <a
-              href="/api/download/cv"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-3 bg-transparent border-2 border-secondary text-secondary font-primary font-bold rounded-full hover:bg-secondary hover:text-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-sm flex items-center justify-center"
-            >
-              Currículo
-            </a>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       <div id="page-skills">
         <SkillsComponent technologies={skills} />
@@ -123,7 +127,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full">
           {projects.length > 0
-            ? projects.map((p) => (
+            ? projects.map((p: any) => (
                 <ProjectsComponent
                   key={p.id}
                   description={p.description}
@@ -133,7 +137,7 @@ const Home = () => {
                   urlRepository={p.urlRepository}
                 />
               ))
-            : ""}
+            : null}
         </div>
       </section>
 
