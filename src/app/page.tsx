@@ -62,7 +62,7 @@ const Home = () => {
         </h1>
 
         <p className="font-secondary text-lg md:text-xl text-primary font-normal leading-relaxed">
-          Harison, desenvolvedor frontend de 16 anos, cria interfaces web
+          Harison, desenvolvedor backend de {new Date().getFullYear() - 2009} anos, cria interfaces web
           intuitivas e dinâmicas. Atualmente, aprofunda seus conhecimentos em
           Análise e Desenvolvimento de Sistemas (ADS) para construir soluções
           web robustas e inovadoras.
