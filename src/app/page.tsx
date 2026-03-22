@@ -62,10 +62,7 @@ const Home = () => {
         </h1>
 
         <p className="font-secondary text-lg md:text-xl text-primary font-normal leading-relaxed">
-          Harison, desenvolvedor backend de {new Date().getFullYear() - 2009} anos, cria interfaces web
-          intuitivas e dinâmicas. Atualmente, aprofunda seus conhecimentos em
-          Análise e Desenvolvimento de Sistemas (ADS) para construir soluções
-          web robustas e inovadoras.
+          Harison, desenvolvedor backend de {new Date().getFullYear() - 2009} anos, cria sistemas web robustos e eficientes, integrando APIs, bancos de dados e automação. Apaixonado por resolver problemas com código limpo e aprender constantemente novas tecnologias para construir aplicações que realmente funcionam.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 mt-8">
