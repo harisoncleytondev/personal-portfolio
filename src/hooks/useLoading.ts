@@ -2,9 +2,9 @@ import { Certificates, Project, Settings, Skills } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 
 export interface DashboardData {
-  settings: Settings | null;
+  settings: (Settings & { cvUrl?: string }) | null;
   projects: Project[];
-  skills: Skills[];
+  skills: (Skills & { imageUrl?: string })[];
   certificates: Certificates[];
 }
 

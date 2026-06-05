@@ -467,13 +467,9 @@ export default function Dashboard() {
                   key={s.id}
                   className="bg-white p-6 rounded-xl shadow-sm border border-gray/10 text-center flex flex-col items-center"
                 >
-                  {s.image && (
+                  {(s as any).imageUrl && (
                     <div className="mb-4 w-16 h-16 flex items-center justify-center bg-gray-50 rounded-lg">
-                      <img
-                        src={`data:image/png;base64,${s.image}`}
-                        alt={s.name}
-                        className="max-w-full max-h-full object-contain"
-                      />
+                      <img src={(s as any).imageUrl} alt={s.name} className="max-w-full max-h-full object-contain" />
                     </div>
                   )}
 

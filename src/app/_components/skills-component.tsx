@@ -46,7 +46,7 @@ export const SkillsComponent = ({ technologies }: SkillsComponentInterface) => {
             >
               <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mb-6 shadow-md transform hover:rotate-12 transition-transform duration-300">
                 <img
-                  src={`data:image/png;base64,${tech.image}`}
+                  src={(tech as any).imageUrl || `data:image/png;base64,${tech.image}`}
                   alt={tech.name}
                   className="w-10 h-10 filter brightness-0 invert"
                   draggable="false"

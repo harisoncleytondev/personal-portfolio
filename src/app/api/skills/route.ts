@@ -1,22 +1,32 @@
 import { prisma } from "@/lib/prisma";
-import { NextRequestDeleteDTO } from "@/types/dtos";
-import { Skills } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth } from "@/lib/auth";
+import { uploadBase64, deleteFile } from "@/lib/minio";
 
 export async function POST(req: NextRequest) {
   try {
-    let body: Skills;
+    if (!(await verifyAuth(req))) {
+      return NextResponse.json({ message: "Não autorizado." }, { status: 401 });
+    }
+
+    let body: { name: string; description: string; image: string };
     try {
       body = await req.json();
     } catch {
       return NextResponse.json({ message: "Body inválido" }, { status: 400 });
     }
 
+    if (!body.name || !body.description || !body.image) {
+      return NextResponse.json({ message: "name, description e image são obrigatórios" }, { status: 400 });
+    }
+
+    const filename = await uploadBase64(body.image, "skill");
+
     const query = await prisma.skills.create({
-      data: body,
+      data: { name: body.name, description: body.description, image: filename },
     });
 
-    return NextResponse.json({ query });
+    return NextResponse.json({ query }, { status: 201 });
   } catch {
     return NextResponse.json({ message: "Erro ao criar." }, { status: 500 });
   }
@@ -24,20 +34,34 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    let body: NextRequestDeleteDTO;
+    if (!(await verifyAuth(req))) {
+      return NextResponse.json({ message: "Não autorizado." }, { status: 401 });
+    }
+
+    let body: { id: string };
     try {
       body = await req.json();
     } catch {
       return NextResponse.json({ message: "Body inválido" }, { status: 400 });
     }
 
-    const query = await prisma.skills.delete({
-      where: {
-        id: body.id,
-      },
-    });
+    if (!body.id) {
+      return NextResponse.json({ message: "ID é obrigatório" }, { status: 400 });
+    }
 
-    return NextResponse.json({ query });
+    const skill = await prisma.skills.findUnique({ where: { id: body.id } });
+
+    if (!skill) {
+      return NextResponse.json({ message: "Habilidade não encontrada." }, { status: 404 });
+    }
+
+    if (skill.image && skill.image.length < 200) {
+      await deleteFile(skill.image).catch(() => {});
+    }
+
+    await prisma.skills.delete({ where: { id: body.id } });
+
+    return NextResponse.json({ message: "Habilidade deletada com sucesso." });
   } catch {
     return NextResponse.json({ message: "Erro ao deletar." }, { status: 500 });
   }
