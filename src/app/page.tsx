@@ -91,6 +91,13 @@ const Home = () => {
           <p className="font-mono text-xs text-[#555570] mt-6">
             <span className="animate-cursor-blink text-[#f59e0b]">_</span> volte em breve...
           </p>
+
+          <a
+            href="/dashboard"
+            className="inline-block mt-10 font-mono text-[10px] px-5 py-2.5 border border-[#2a2a40] text-[#8888a0] hover:text-[#e8e8ed] hover:border-[#555570] active:scale-[0.97] transition-all uppercase tracking-[0.15em]"
+          >
+            $ ./admin.sh
+          </a>
         </div>
       </div>
     );

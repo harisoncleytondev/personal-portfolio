@@ -34,6 +34,7 @@ model Project {
   urlRepository String
   languages     String[]
   image         String   @default("")
+  order         Int      @default(0)
   createdAt     DateTime @default(now())
 }
 
@@ -42,6 +43,7 @@ model Skills {
   name        String
   description String
   image       String 
+  order       Int    @default(0)
   createdAt   DateTime @default(now())
 }
 

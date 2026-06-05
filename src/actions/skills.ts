@@ -16,8 +16,10 @@ export async function createSkill(data: { name: string; description: string; ima
 
   const filename = await uploadBase64(data.image, "skill");
 
+  const maxOrder = await prisma.skills.aggregate({ _max: { order: true } });
+
   await prisma.skills.create({
-    data: { name: data.name, description: data.description, image: filename },
+    data: { name: data.name, description: data.description, image: filename, order: (maxOrder._max.order ?? -1) + 1 },
   });
 
   revalidateTag("loading-infos", "max");

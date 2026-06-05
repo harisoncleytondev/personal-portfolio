@@ -23,8 +23,10 @@ export async function createProject(data: Record<string, unknown>) {
     image = await uploadBase64(imageBase64, "project");
   }
 
+  const maxOrder = await prisma.project.aggregate({ _max: { order: true } });
+
   await prisma.project.create({
-    data: { ...projectData, image },
+    data: { ...projectData, image, order: (maxOrder._max.order ?? -1) + 1 },
   });
 
   revalidateTag("loading-infos", "max");

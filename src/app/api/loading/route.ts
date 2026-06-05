@@ -4,9 +4,9 @@ import { getPresignedUrl } from "@/lib/minio";
 
 export async function GET() {
   try {
-    const projects = await prisma.project.findMany();
-    const skills = await prisma.skills.findMany();
-    const certificates = await prisma.certificates.findMany();
+    const projects = await prisma.project.findMany({ orderBy: { order: "asc" } });
+    const skills = await prisma.skills.findMany({ orderBy: { order: "asc" } });
+    const certificates = await prisma.certificates.findMany({ orderBy: { order: "asc" } });
     const settings = await prisma.settings.findFirst();
 
     const projectsWithUrls = await Promise.all(
