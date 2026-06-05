@@ -23,12 +23,12 @@ export const AppSettingsProvider = ({ children }: React.PropsWithChildren) => {
   };
 
   const dark = {
-    "--color-primary": "#f8f7ff",
-    "--color-secondary": "#bf7af0",
-    "--color-light-gray": "#0b090f",
-    "--color-gray": "#8e89a3",
-    "--color-dark-gray": "#e2e0e7",
-    "--color-card": "#15121d",
+    "--color-primary": "#e8e8ed",
+    "--color-secondary": "#7c3aed",
+    "--color-light-gray": "#08080e",
+    "--color-gray": "#555570",
+    "--color-dark-gray": "#8888a0",
+    "--color-card": "#0f0f1a",
   };
 
   useEffect(() => {

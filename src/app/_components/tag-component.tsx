@@ -4,8 +4,8 @@ interface TagsComponentInterface {
 
 export const TagsComponent = ({ language }: TagsComponentInterface) => {
   return (
-    <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary rounded-full shadow-sm text-white text-xs font-semibold hover:scale-105 transition-transform duration-200 select-none">
-      <span>#{language}</span>
-    </div>
+    <span className="inline-flex items-center px-3 py-1 bg-secondary/10 text-secondary text-[11px] font-semibold rounded-lg hover:bg-secondary hover:text-white hover:scale-105 transition-all duration-300 select-none">
+      {language}
+    </span>
   );
 };
