@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { getPresignedUrl } from "@/lib/minio";
 
 export async function GET() {
   try {
@@ -9,6 +10,11 @@ export async function GET() {
 
     if (!settings?.cv) {
       return new NextResponse("Currículo não encontrado", { status: 404 });
+    }
+
+    if (settings.cv.length < 200) {
+      const url = await getPresignedUrl(settings.cv);
+      return NextResponse.redirect(url);
     }
 
     const pdfBuffer = Buffer.from(settings.cv, "base64");

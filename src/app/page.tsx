@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { NavbarComponent } from "./_components/navbar-component";
 import { ProjectsComponent } from "./_components/projects-component";
 import { SkillsComponent } from "./_components/skills-component";
@@ -10,76 +11,43 @@ import { useLoading } from "@/hooks/useLoading";
 
 const Home = () => {
   const { data, isLoading } = useLoading();
+  const [visibleProjects, setVisibleProjects] = useState(2);
 
   const HeroSection = () => (
-    <section
-      id="page-home"
-      className="min-h-screen flex flex-col justify-center items-center py-20 px-4 gap-8"
-    >
-      <ul className="flex gap-6 list-none mb-8 flex-wrap justify-center">
-        <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
-          <a
-            href="#page-home"
-            className="font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
-          >
-            Início
+    <section id="page-home" className="min-h-screen flex flex-col justify-center items-center py-20 px-4 gap-10">
+      <nav className="flex gap-8 flex-wrap justify-center font-mono text-sm">
+        {["#inicio", "#tecnologias", "#projetos", "#qualificacoes"].map((item, i) => (
+          <a key={i} href={`#page-${["home", "skills", "projects", "certificates"][i]}`}
+            className="text-[#555570] hover:text-[#7c3aed] transition-colors tracking-[0.05em]">
+            {item}
           </a>
-        </li>
+        ))}
+      </nav>
 
-        <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
-          <a
-            href="#page-skills"
-            className="font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
-          >
-            Tecnologias
-          </a>
-        </li>
+      <div className="flex flex-col items-center gap-4 max-w-3xl text-center">
+        <div className="font-mono text-[10px] text-[#555570] tracking-[0.3em] uppercase mb-2">
+          <span className="text-[#22c55e]">●</span> sistema disponível
+        </div>
 
-        <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
-          <a
-            href="#page-projects"
-            className="font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
-          >
-            Projetos
-          </a>
-        </li>
-        <li className="cursor-pointer transition-transform hover:-translate-y-1 hover:scale-105">
-          <a
-            href="#page-certificates"
-            className="font-primary text-lg transition-colors duration-300 capitalize text-dark-gray hover:text-secondary"
-          >
-            Qualificações
-          </a>
-        </li>
-      </ul>
-
-      <div className="flex flex-col items-center gap-6 max-w-3xl text-center">
-        <h1 className="font-primary text-5xl md:text-6xl font-bold text-secondary">
+        <h1 className="font-mono text-3xl md:text-5xl font-bold text-[#e8e8ed] leading-tight">
+          <span className="text-[#7c3aed]">$</span> echo &quot;
           <TitleComponent />
-          <span className="text-primary border-r-4 border-primary ml-1 animate-cursor-blink">
-            &nbsp;
-          </span>
+          <span className="text-[#555570]">&quot;</span>
+          <span className="border-r-2 border-[#22c55e] ml-0.5 animate-cursor-blink">&nbsp;</span>
         </h1>
 
-        <p className="font-secondary text-lg md:text-xl text-primary font-normal leading-relaxed">
-          Harison, desenvolvedor backend de {new Date().getFullYear() - 2009} anos, cria sistemas web robustos e eficientes, integrando APIs, bancos de dados e automação. Apaixonado por resolver problemas com código limpo e aprender constantemente novas tecnologias para construir aplicações que realmente funcionam.
+        <p className="font-mono text-xs md:text-sm text-[#8888a0] leading-relaxed max-w-2xl mt-2">
+          <span className="text-[#555570]">//</span> Desenvolvedor backend, construo sistemas web robustos — apis resilientes, bancos otimizados e código limpo.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mt-8">
-          <a
-            href="#page-contact"
-            className="px-8 py-3 bg-secondary text-white font-primary font-bold rounded-full shadow-md hover:bg-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-sm flex items-center justify-center"
-          >
-            Contato
+        <div className="flex flex-wrap justify-center gap-3 mt-6">
+          <a href="#page-contact"
+            className="font-mono text-[10px] px-5 py-2.5 bg-[#7c3aed] text-[#e8e8ed] hover:bg-[#6d28d9] active:scale-[0.97] transition-all uppercase tracking-[0.15em]">
+            $ ./contato.sh
           </a>
-
-          <a
-            href="/api/download/cv"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-8 py-3 bg-transparent border-2 border-secondary text-secondary font-primary font-bold rounded-full hover:bg-secondary hover:text-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-sm flex items-center justify-center"
-          >
-            Currículo
+          <a href="/api/download/cv" target="_blank" rel="noopener noreferrer"
+            className="font-mono text-[10px] px-5 py-2.5 border border-[#2a2a40] text-[#8888a0] hover:text-[#e8e8ed] hover:border-[#555570] active:scale-[0.97] transition-all uppercase tracking-[0.15em]">
+            $ ./curriculo.pdf
           </a>
         </div>
       </div>
@@ -88,11 +56,15 @@ const Home = () => {
 
   if (isLoading || !data || !data.settings) {
     return (
-      <div className="w-full min-h-screen bg-light-gray text-dark-gray transition-colors duration-300 flex flex-col">
-        <div className="h-20 w-full bg-light-gray animate-pulse"></div>
+      <div className="w-full min-h-screen bg-[#08080e] text-[#e8e8ed] transition-colors duration-300 flex flex-col">
+        <div className="h-16 w-full bg-[#0f0f1a] border-b border-[#1a1a28] flex items-center px-6">
+          <span className="font-mono text-xs text-[#555570]"><span className="text-[#22c55e]">●</span> carregando...</span>
+        </div>
         <HeroSection />
         <div className="flex justify-center items-center py-20">
-          <div className="w-10 h-10 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
+          <div className="font-mono text-xs text-[#555570]">
+            <span className="animate-cursor-blink text-[#22c55e]">_</span> inicializando módulos...
+          </div>
         </div>
       </div>
     );
@@ -100,52 +72,82 @@ const Home = () => {
 
   const { skills, projects, certificates, settings } = data;
 
+  if (settings.maintenance) {
+    return (
+      <div className="w-full min-h-screen bg-[#08080e] text-[#e8e8ed] flex flex-col items-center justify-center px-4">
+        <div className="max-w-lg text-center">
+          <div className="font-mono text-[10px] text-[#f59e0b] tracking-[0.3em] uppercase mb-6">
+            <span className="text-[#f59e0b]">●</span> sistema em manutenção
+          </div>
+
+          <h1 className="font-mono text-3xl md:text-5xl font-bold text-[#e8e8ed] leading-tight mb-4">
+            <span className="text-[#f59e0b]">$</span> ./maintenance.sh
+          </h1>
+
+          <p className="font-mono text-xs md:text-sm text-[#8888a0] leading-relaxed">
+            <span className="text-[#555570]">//</span> O portfólio está passando por atualizações no momento.
+          </p>
+
+          <p className="font-mono text-xs text-[#555570] mt-6">
+            <span className="animate-cursor-blink text-[#f59e0b]">_</span> volte em breve...
+          </p>
+
+          <a
+            href="/dashboard"
+            className="inline-block mt-10 font-mono text-[10px] px-5 py-2.5 border border-[#2a2a40] text-[#8888a0] hover:text-[#e8e8ed] hover:border-[#555570] active:scale-[0.97] transition-all uppercase tracking-[0.15em]"
+          >
+            $ ./admin.sh
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full min-h-screen bg-light-gray text-dark-gray transition-colors duration-300">
-      <NavbarComponent
-        github={settings.github}
-        instagram={settings.instagram}
-        linkedin={settings.linkedin}
-      />
+    <div className="w-full min-h-screen bg-[#08080e] text-[#e8e8ed] transition-colors duration-300">
+      <NavbarComponent github={settings.github} instagram={settings.instagram} linkedin={settings.linkedin} />
 
       <HeroSection />
 
-      <div id="page-skills">
-        <SkillsComponent technologies={skills} />
-      </div>
+      <div id="page-skills"><SkillsComponent technologies={skills} /></div>
 
-      <section
-        id="page-projects"
-        className="min-h-screen py-20 px-8 bg-light-gray flex flex-col items-center"
-      >
-        <h2 className="font-primary text-4xl text-primary mb-16 border-b-4 border-secondary pb-2 self-start md:self-center">
-          Projetos
-        </h2>
+      <section id="page-projects" className="relative py-16 px-8 bg-[#08080e] overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#7c3aed]/20 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#7c3aed]/10 to-transparent pointer-events-none" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full">
-          {projects.length > 0
-            ? projects.map((p: any) => (
-                <ProjectsComponent
-                  key={p.id}
-                  description={p.description}
-                  languages={p.languages}
-                  title={p.title}
-                  url={p.url}
-                  urlRepository={p.urlRepository}
-                />
-              ))
-            : null}
+        <div className="relative max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="font-mono text-[10px] text-[#555570] tracking-[0.3em] uppercase">~/portfolio/projects</span>
+            <h2 className="font-mono text-3xl md:text-4xl font-bold text-[#e8e8ed] mt-3">
+              <span className="text-[#7c3aed]">$</span> Projetos
+              <span className="text-[#555570]"> —n 5</span>
+            </h2>
+            <p className="font-mono text-xs text-[#555570] mt-3 max-w-lg mx-auto"># sistemas distribuídos, apis resilientes e arquiteturas escaláveis</p>
+          </div>
+
+          <div className="flex flex-col gap-5 max-w-5xl mx-auto">
+            {projects.length > 0
+              ? projects.slice(0, visibleProjects).map((p: any, i: number) => (
+                  <div key={p.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                    <ProjectsComponent index={i} description={p.description} languages={p.languages} title={p.title} url={p.url} urlRepository={p.urlRepository} imageUrl={(p as any).imageUrl} />
+                  </div>
+                ))
+              : null}
+          </div>
+
+          {visibleProjects < projects.length && (
+            <div className="flex justify-center mt-10">
+              <button onClick={() => setVisibleProjects((prev) => prev + 1)}
+                className="font-mono text-xs px-6 py-3 bg-transparent border border-[#2a2a40] text-[#8888a0] hover:text-[#22c55e] hover:border-[#22c55e]/50 active:scale-[0.97] transition-all duration-200 tracking-[0.1em] uppercase">
+                <span className="text-[#555570]">$</span> ./load_next.sh
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
       <CertificatesComponent certificates={certificates} />
-      <FooterComponent
-        email={settings.email}
-        github={settings.github}
-        instagram={settings.instagram}
-        linkedin={settings.linkedin}
-        phone={settings.phone}
-      />
+      <FooterComponent email={settings.email} github={settings.github} instagram={settings.instagram} linkedin={settings.linkedin} phone={settings.phone} />
     </div>
   );
 };

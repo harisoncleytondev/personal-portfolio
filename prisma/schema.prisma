@@ -14,14 +14,15 @@ datasource db {
 }
 
 model Settings {
-  id        String   @id @map("_id")
-  email     String   @default("harisoncleytondev@outlook.com")
-  phone     String   @default("xxxx-xxxx")
-  instagram String   @default("username")
-  linkedin  String   @default("username")
-  github    String   @default("username")
-  cv        String   @default("")
-  updatedAt DateTime @updatedAt
+  id          String   @id @map("_id")
+  email       String   @default("harisoncleytondev@outlook.com")
+  phone       String   @default("xxxx-xxxx")
+  instagram   String   @default("username")
+  linkedin    String   @default("username")
+  github      String   @default("username")
+  cv          String   @default("")
+  maintenance Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
 }
 
 
@@ -32,6 +33,8 @@ model Project {
   url           String
   urlRepository String
   languages     String[]
+  image         String   @default("")
+  order         Int      @default(0)
   createdAt     DateTime @default(now())
 }
 
@@ -40,6 +43,7 @@ model Skills {
   name        String
   description String
   image       String 
+  order       Int    @default(0)
   createdAt   DateTime @default(now())
 }
 

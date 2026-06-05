@@ -18,15 +18,13 @@ export const SidebarButtonComponent = ({
 }: SidebarButtonComponentInterface) => (
   <button
     onClick={() => setActive(id)}
-    className={`w-full flex items-center gap-3 p-4 transition-all duration-200 border-r-4 ${
+    className={`w-full flex items-center gap-3 px-6 py-4 transition-all duration-200 border-l-2 font-mono text-xs uppercase tracking-[0.1em] ${
       activeTab === id
-        ? "bg-white border-secondary text-secondary font-bold shadow-sm"
-        : "text-gray/70 border-transparent hover:bg-white/50 hover:text-dark-gray"
+        ? "bg-[#1a1a28] border-l-[#7c3aed] text-[#e8e8ed]"
+        : "border-l-transparent text-[#555570] hover:text-[#8888a0] hover:bg-[#0f0f1a]"
     }`}
   >
-    <Icon className="text-lg" />
-    <span className="font-primary text-sm uppercase tracking-wider">
-      {label}
-    </span>
+    <Icon className="text-sm" />
+    <span>{label}</span>
   </button>
 );
