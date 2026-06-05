@@ -28,7 +28,7 @@ import { NextRequestDeleteDTO } from "@/types/dtos";
 import { toast } from "sonner";
 import { createProject as createProjectAction, deleteProject as deleteProjectAction } from "@/actions/projects";
 import { createSkill as createSkillAction, deleteSkill as deleteSkillAction } from "@/actions/skills";
-import { saveSettings as saveSettingsAction } from "@/actions/settings";
+import { saveSettings as saveSettingsAction, toggleMaintenance } from "@/actions/settings";
 import { createCertificate as createCertificateAction, deleteCertificate as deleteCertificateAction } from "@/actions/certificates";
 
 export default function Dashboard() {
@@ -104,6 +104,23 @@ export default function Dashboard() {
     "w-full bg-[var(--color-card)] p-3 rounded border border-gray/10 outline-none text-sm focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-dark-gray invalid:border-red-500";
   const fileInputClass =
     "w-full bg-[var(--color-card)] p-2 rounded border border-gray/10 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-secondary/10 file:text-secondary hover:file:bg-secondary/20 text-dark-gray";
+
+  const handleToggleMaintenance = async () => {
+    const newValue = !data?.settings?.maintenance;
+    const toastId = toast.loading(
+      newValue ? "Ativando modo manutenção..." : "Desativando modo manutenção..."
+    );
+    const result = await toggleMaintenance(newValue);
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+      toast.success(
+        newValue ? "Modo manutenção ativado." : "Modo manutenção desativado.",
+        { id: toastId }
+      );
+    } else {
+      toast.error(result.error || "Erro ao alterar modo manutenção.", { id: toastId });
+    }
+  };
 
   const handleSaveSettings = async (data: SettingsFormValues) => {
     const file = data.cv && data.cv.length > 0 ? data.cv[0] : null;
@@ -390,7 +407,24 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="mt-8 flex justify-end">
+              <div className="mt-8 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="text-xs font-bold uppercase tracking-widest text-gray">Modo Manutenção</span>
+                  <button
+                    type="button"
+                    onClick={handleToggleMaintenance}
+                    className={`relative w-12 h-6 rounded-full transition-colors ${
+                      data?.settings?.maintenance ? "bg-[#f59e0b]" : "bg-gray/30"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                        data?.settings?.maintenance ? "translate-x-6" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+
                 <button className="bg-secondary text-white px-8 py-3 rounded shadow hover:bg-primary transition-all font-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2">
                   <FaSave /> Salvar Alterações
                 </button>

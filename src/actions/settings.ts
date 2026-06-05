@@ -26,3 +26,18 @@ export async function saveSettings(data: Record<string, unknown>) {
   revalidateTag("loading-infos", "max");
   return { success: true } as const;
 }
+
+export async function toggleMaintenance(value: boolean) {
+  if (!(await verifyAuth())) {
+    return { success: false, error: "Não autorizado." } as const;
+  }
+
+  await prisma.settings.upsert({
+    where: { id: "main" },
+    update: { maintenance: value },
+    create: { id: "main", maintenance: value },
+  });
+
+  revalidateTag("loading-infos", "max");
+  return { success: true } as const;
+}

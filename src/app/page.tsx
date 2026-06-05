@@ -72,6 +72,30 @@ const Home = () => {
 
   const { skills, projects, certificates, settings } = data;
 
+  if (settings.maintenance) {
+    return (
+      <div className="w-full min-h-screen bg-[#08080e] text-[#e8e8ed] flex flex-col items-center justify-center px-4">
+        <div className="max-w-lg text-center">
+          <div className="font-mono text-[10px] text-[#f59e0b] tracking-[0.3em] uppercase mb-6">
+            <span className="text-[#f59e0b]">●</span> sistema em manutenção
+          </div>
+
+          <h1 className="font-mono text-3xl md:text-5xl font-bold text-[#e8e8ed] leading-tight mb-4">
+            <span className="text-[#f59e0b]">$</span> ./maintenance.sh
+          </h1>
+
+          <p className="font-mono text-xs md:text-sm text-[#8888a0] leading-relaxed">
+            <span className="text-[#555570]">//</span> O portfólio está passando por atualizações no momento.
+          </p>
+
+          <p className="font-mono text-xs text-[#555570] mt-6">
+            <span className="animate-cursor-blink text-[#f59e0b]">_</span> volte em breve...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full min-h-screen bg-[#08080e] text-[#e8e8ed] transition-colors duration-300">
       <NavbarComponent github={settings.github} instagram={settings.instagram} linkedin={settings.linkedin} />

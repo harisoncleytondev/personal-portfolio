@@ -14,14 +14,15 @@ datasource db {
 }
 
 model Settings {
-  id        String   @id @map("_id")
-  email     String   @default("harisoncleytondev@outlook.com")
-  phone     String   @default("xxxx-xxxx")
-  instagram String   @default("username")
-  linkedin  String   @default("username")
-  github    String   @default("username")
-  cv        String   @default("")
-  updatedAt DateTime @updatedAt
+  id          String   @id @map("_id")
+  email       String   @default("harisoncleytondev@outlook.com")
+  phone       String   @default("xxxx-xxxx")
+  instagram   String   @default("username")
+  linkedin    String   @default("username")
+  github      String   @default("username")
+  cv          String   @default("")
+  maintenance Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
 }
 
 
