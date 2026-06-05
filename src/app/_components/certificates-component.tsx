@@ -39,10 +39,10 @@ export const CertificatesComponent = ({
   const visibleCertificates = filteredCertificates.slice(0, limit);
 
   return (
-    <section id="page-certificates" className="py-28 px-4 bg-[#08080e] flex flex-col items-center relative overflow-hidden">
+    <section id="page-certificates" className="py-16 px-4 bg-[#08080e] flex flex-col items-center relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#7c3aed]/15 to-transparent pointer-events-none" />
 
-      <div className="text-center mb-14">
+      <div className="text-center mb-10">
         <span className="font-mono text-[10px] text-[#555570] tracking-[0.3em] uppercase">~/portfolio/certificates</span>
         <h2 className="font-mono text-3xl md:text-4xl font-bold text-[#e8e8ed] mt-3">
           <span className="text-[#7c3aed]">$</span> Qualificações

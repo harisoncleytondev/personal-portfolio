@@ -18,10 +18,10 @@ export const SkillsComponent = ({ technologies }: SkillsComponentInterface) => {
   };
 
   return (
-    <section className="py-28 px-4 md:px-20 bg-[#08080e] flex flex-col items-center overflow-hidden relative">
+    <section className="py-16 px-4 md:px-20 bg-[#08080e] flex flex-col items-center overflow-hidden relative">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#7c3aed]/20 to-transparent pointer-events-none" />
 
-      <div className="text-center mb-14">
+      <div className="text-center mb-10">
         <span className="font-mono text-[10px] text-[#555570] tracking-[0.3em] uppercase">~/portfolio/tech-stack</span>
         <h2 className="font-mono text-3xl md:text-4xl font-bold text-[#e8e8ed] mt-3">
           <span className="text-[#7c3aed]">$</span> Tecnologias

@@ -80,12 +80,12 @@ const Home = () => {
 
       <div id="page-skills"><SkillsComponent technologies={skills} /></div>
 
-      <section id="page-projects" className="relative py-28 px-8 bg-[#08080e] overflow-hidden">
+      <section id="page-projects" className="relative py-16 px-8 bg-[#08080e] overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#7c3aed]/20 to-transparent pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#7c3aed]/10 to-transparent pointer-events-none" />
 
         <div className="relative max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <span className="font-mono text-[10px] text-[#555570] tracking-[0.3em] uppercase">~/portfolio/projects</span>
             <h2 className="font-mono text-3xl md:text-4xl font-bold text-[#e8e8ed] mt-3">
               <span className="text-[#7c3aed]">$</span> Projetos
@@ -94,7 +94,7 @@ const Home = () => {
             <p className="font-mono text-xs text-[#555570] mt-3 max-w-lg mx-auto"># sistemas distribuídos, apis resilientes e arquiteturas escaláveis</p>
           </div>
 
-          <div className="flex flex-col gap-6 max-w-5xl mx-auto">
+          <div className="flex flex-col gap-5 max-w-5xl mx-auto">
             {projects.length > 0
               ? projects.slice(0, visibleProjects).map((p: any, i: number) => (
                   <div key={p.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>

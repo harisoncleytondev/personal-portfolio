@@ -30,9 +30,9 @@ export const FooterComponent = ({ email, phone, instagram, github, linkedin }: F
   const whatsappLink = phone ? `https://wa.me/55${phone.replace(/\D/g, "")}` : "#";
 
   return (
-    <footer id="page-contact" className="bg-[#08080e] pt-24 pb-10 px-8 border-t border-[#1a1a28]">
+    <footer id="page-contact" className="bg-[#08080e] pt-16 pb-10 px-8 border-t border-[#1a1a28]">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <span className="font-mono text-[10px] text-[#555570] tracking-[0.3em] uppercase">~/portfolio/contact</span>
           <h2 className="font-mono text-3xl md:text-4xl font-bold text-[#e8e8ed] mt-3">
             <span className="text-[#7c3aed]">$</span> Contato
