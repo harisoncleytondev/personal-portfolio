@@ -15,7 +15,7 @@ const Home = () => {
 
   const HeroSection = () => (
     <section id="page-home" className="min-h-screen flex flex-col justify-center items-center py-20 px-4 gap-10">
-      <nav className="flex gap-8 flex-wrap justify-center font-mono text-xs">
+      <nav className="flex gap-8 flex-wrap justify-center font-mono text-sm">
         {["#inicio", "#tecnologias", "#projetos", "#qualificacoes"].map((item, i) => (
           <a key={i} href={`#page-${["home", "skills", "projects", "certificates"][i]}`}
             className="text-[#555570] hover:text-[#7c3aed] transition-colors tracking-[0.05em]">
