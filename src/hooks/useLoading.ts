@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export interface DashboardData {
   settings: (Settings & { cvUrl?: string }) | null;
-  projects: Project[];
+  projects: (Project & { imageUrl?: string })[];
   skills: (Skills & { imageUrl?: string })[];
   certificates: Certificates[];
 }

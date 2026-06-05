@@ -32,6 +32,7 @@ model Project {
   url           String
   urlRepository String
   languages     String[]
+  image         String   @default("")
   createdAt     DateTime @default(now())
 }
 

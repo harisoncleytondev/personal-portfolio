@@ -1,11 +1,15 @@
-import { Project } from "@prisma/client";
+import Image from "next/image";
 import { TagsComponent } from "./tag-component";
 import { FaExternalLinkAlt, FaGithub } from "react-icons/fa";
 
-type ProjectsComponentType = Pick<
-  Project,
-  "title" | "description" | "url" | "urlRepository" | "languages"
->;
+interface ProjectsComponentProps {
+  title: string;
+  description: string;
+  url: string;
+  urlRepository: string;
+  languages: string[];
+  imageUrl?: string | null;
+}
 
 export const ProjectsComponent = ({
   title,
@@ -13,21 +17,30 @@ export const ProjectsComponent = ({
   url,
   urlRepository,
   languages = [],
-}: ProjectsComponentType) => {
+  imageUrl,
+}: ProjectsComponentProps) => {
   return (
-    <div className="group h-[450px] bg-light-gray rounded-2xl shadow-lg border border-transparent hover:border-secondary hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col relative">
-      <div className="h-48 w-full overflow-hidden relative border-b border-gray/10 bg-white">
-        <iframe
-          src={url}
-          title={title}
-          loading="lazy"
-          scrolling="no"
-          tabIndex={-1}
-          className="absolute top-0 left-0 w-[400%] h-[400%] origin-top-left scale-[0.25] border-none pointer-events-none select-none opacity-90 transition-opacity group-hover:opacity-100"
-        />
-        <div className="absolute inset-0 z-10 bg-black/10 lg:bg-transparent lg:group-hover:bg-black/10 transition-colors duration-300"></div>
+    <article className="group h-[450px] bg-light-gray rounded-2xl shadow-lg border border-transparent hover:border-secondary hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col relative">
+      <div className="h-48 w-full overflow-hidden relative bg-gradient-to-br from-secondary/20 to-primary/20">
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="font-primary text-4xl font-bold text-secondary/20 select-none">
+              {title.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        )}
 
-        <div className="absolute inset-0 z-20 flex items-center justify-center gap-4 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[2px]">
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300" />
+
+        <div className="absolute inset-0 z-20 flex items-center justify-center gap-4 opacity-0 lg:group-hover:opacity-100 transition-all duration-300 translate-y-4 lg:group-hover:translate-y-0">
           <a
             href={url}
             target="_blank"
@@ -51,7 +64,7 @@ export const ProjectsComponent = ({
 
       <div className="p-6 flex flex-col gap-4 flex-1 bg-light-gray z-30">
         <div className="flex flex-col gap-3">
-          <h3 className="font-primary text-2xl font-bold text-secondary group-hover:text-primary transition-colors">
+          <h3 className="font-primary text-2xl font-bold text-secondary group-hover:text-primary transition-colors line-clamp-1">
             {title}
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -65,6 +78,6 @@ export const ProjectsComponent = ({
           {description}
         </p>
       </div>
-    </div>
+    </article>
   );
 };

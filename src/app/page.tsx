@@ -132,6 +132,7 @@ const Home = () => {
                   title={p.title}
                   url={p.url}
                   urlRepository={p.urlRepository}
+                  imageUrl={(p as any).imageUrl}
                 />
               ))
             : null}

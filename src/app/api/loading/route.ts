@@ -9,6 +9,18 @@ export async function GET() {
     const certificates = await prisma.certificates.findMany();
     const settings = await prisma.settings.findFirst();
 
+    const projectsWithUrls = await Promise.all(
+      projects.map(async (p) => {
+        let imageUrl: string | null = null;
+        if (p.image && p.image.length < 200) {
+          try {
+            imageUrl = await getPresignedUrl(p.image);
+          } catch {}
+        }
+        return { ...p, imageUrl };
+      })
+    );
+
     const skillsWithUrls = await Promise.all(
       skills.map(async (s) => {
         let imageUrl: string | null = null;
@@ -30,8 +42,8 @@ export async function GET() {
 
     return NextResponse.json({
       settings: settings ? { ...settings, cvUrl } : null,
+      projects: projectsWithUrls,
       skills: skillsWithUrls,
-      projects,
       certificates,
     });
   } catch (error) {

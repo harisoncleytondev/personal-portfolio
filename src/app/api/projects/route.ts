@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { createProjectSchema, deleteProjectSchema } from "@/lib/validations/project";
 import { verifyAuth } from "@/lib/auth";
+import { uploadBase64, deleteFile } from "@/lib/minio";
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,8 +26,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const { image: imageBase64, ...projectData } = parsed.data;
+    let image = "";
+
+    if (imageBase64) {
+      image = await uploadBase64(imageBase64, "project");
+    }
+
     const project = await prisma.project.create({
-      data: parsed.data,
+      data: { ...projectData, image },
     });
 
     return NextResponse.json({ project }, { status: 201 });
@@ -57,9 +65,19 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    await prisma.project.delete({
+    const project = await prisma.project.findUnique({
       where: { id: parsed.data.id },
     });
+
+    if (!project) {
+      return NextResponse.json({ message: "Projeto não encontrado." }, { status: 404 });
+    }
+
+    if (project.image && project.image.length < 200) {
+      await deleteFile(project.image).catch(() => {});
+    }
+
+    await prisma.project.delete({ where: { id: parsed.data.id } });
 
     return NextResponse.json({ message: "Projeto deletado com sucesso." });
   } catch {

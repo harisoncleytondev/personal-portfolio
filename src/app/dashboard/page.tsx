@@ -47,6 +47,7 @@ export default function Dashboard() {
     url: string;
     urlRepository: string;
     technologies: string;
+    image: FileList;
   }
 
   interface CertificateFormValues {
@@ -151,24 +152,38 @@ export default function Dashboard() {
     setIsModalOpen(false);
 
     const toastId = toast.loading("Criando projeto...");
-    const { technologies, ...rest } = data;
+    const file = data.image?.[0];
+    const { technologies, image: _imageFile, ...rest } = data;
     const techList = technologies
       .split(",")
       .map((tech) => tech.trim())
       .filter((t) => t !== "");
 
-    postProject({ ...rest, languages: techList } as any, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["query-loading-infos"],
-        });
-        projectForm.reset();
-        toast.success("Projeto criado com sucesso!", { id: toastId });
-      },
-      onError: () => {
-        toast.error("Erro ao criar projeto.", { id: toastId });
-      },
-    });
+    const submitProject = (payload: any) => {
+      postProject(payload as any, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["query-loading-infos"],
+          });
+          projectForm.reset();
+          toast.success("Projeto criado com sucesso!", { id: toastId });
+        },
+        onError: () => {
+          toast.error("Erro ao criar projeto.", { id: toastId });
+        },
+      });
+    };
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = (reader.result as string).split(",")[1];
+        submitProject({ ...rest, languages: techList, image: base64String });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      submitProject({ ...rest, languages: techList });
+    }
   };
 
   const handleDeleteProject = (data: NextRequestDeleteDTO) => {
@@ -445,6 +460,11 @@ export default function Dashboard() {
                   key={p.id}
                   className="bg-white p-6 rounded-xl shadow-sm border border-gray/10"
                 >
+                  {(p as any).imageUrl && (
+                    <div className="mb-4 w-full h-32 overflow-hidden rounded-lg bg-gray-50">
+                      <img src={(p as any).imageUrl} alt={p.title} className="w-full h-full object-cover" />
+                    </div>
+                  )}
                   <h3 className="font-bold text-secondary">{p.title}</h3>
                   <p className="text-sm text-gray mt-2">{p.description}</p>
                   <p className="text-xs mt-2">Live: {p.url}</p>
@@ -583,6 +603,14 @@ export default function Dashboard() {
                     placeholder="URL Repositório"
                     className={inputClass}
                   />
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    {...projectForm.register("image")}
+                    className={fileInputClass}
+                  />
+
                   <button className="bg-secondary text-white py-3 rounded font-bold uppercase text-xs">
                     Salvar Registro
                   </button>

@@ -6,6 +6,7 @@ export const createProjectSchema = z.object({
   url: z.string().url("URL inválida"),
   urlRepository: z.string().url("URL do repositório inválida"),
   languages: z.array(z.string()).min(1, "Pelo menos uma linguagem é obrigatória"),
+  image: z.string().optional(),
 });
 
 export const deleteProjectSchema = z.object({
