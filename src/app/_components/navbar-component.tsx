@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiFillInstagram } from "react-icons/ai";
 import { FaLinkedin } from "react-icons/fa6";
-import { IoLogoGithub, IoMdSunny, IoMdMenu, IoMdClose } from "react-icons/io";
-import { IoMoon } from "react-icons/io5";
+import { IoLogoGithub, IoMdMenu, IoMdClose } from "react-icons/io";
 
 type NavbarComponentType = Pick<Settings, "github" | "instagram" | "linkedin">;
 
@@ -15,18 +14,8 @@ export const NavbarComponent = ({
   instagram,
   linkedin,
 }: NavbarComponentType) => {
-  const { theme, setTheme } = useSettings();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const handleButtonTheme = () => {
-    if (theme === "dark") return setTheme("light");
-    return setTheme("dark");
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
 
   return (
     <div className="fixed top-0 left-0 w-full z-50 border-b border-[#1a1a28] bg-[#08080e]/95 backdrop-blur-sm">
@@ -41,17 +30,7 @@ export const NavbarComponent = ({
           <a href={linkedin} className="text-lg text-[#555570] hover:text-[#e8e8ed] transition-colors"><FaLinkedin /></a>
         </div>
 
-        <div className="hidden md:flex gap-3 items-center">
-          <button onClick={handleButtonTheme} className="font-mono text-[10px] text-[#555570] hover:text-[#e8e8ed] transition-colors tracking-[0.1em] uppercase">
-            {theme === "dark" ? (
-              <span className="flex items-center gap-1.5"><IoMdSunny className="text-sm text-[#febc2e]" /> light</span>
-            ) : (
-              <span className="flex items-center gap-1.5"><IoMoon className="text-sm" /> dark</span>
-            )}
-          </button>
-        </div>
-
-        <button onClick={toggleMobileMenu} className="md:hidden text-[#8888a0] text-2xl">
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden text-[#8888a0] text-2xl">
           {isMobileMenuOpen ? <IoMdClose /> : <IoMdMenu />}
         </button>
       </div>
@@ -62,9 +41,6 @@ export const NavbarComponent = ({
           <a href={instagram} className="text-2xl text-[#555570] hover:text-[#e8e8ed] transition-colors"><AiFillInstagram /></a>
           <a href={linkedin} className="text-2xl text-[#555570] hover:text-[#e8e8ed] transition-colors"><FaLinkedin /></a>
         </div>
-        <button onClick={handleButtonTheme} className="font-mono text-xs text-[#555570] hover:text-[#e8e8ed] transition-colors tracking-[0.1em] uppercase">
-          {theme === "dark" ? "☀️ light mode" : "🌙 dark mode"}
-        </button>
       </div>
     </div>
   );
