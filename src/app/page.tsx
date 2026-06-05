@@ -116,26 +116,41 @@ const Home = () => {
 
       <section
         id="page-projects"
-        className="min-h-screen py-20 px-8 bg-light-gray flex flex-col items-center"
+        className="relative py-28 px-8 overflow-hidden"
       >
-        <h2 className="font-primary text-4xl text-primary mb-16 border-b-4 border-secondary pb-2 self-start md:self-center">
-          Projetos
-        </h2>
+        <div className="absolute inset-0 bg-gradient-to-b from-light-gray via-secondary/[0.03] to-light-gray pointer-events-none" />
+        <div className="absolute top-1/4 -right-32 w-96 h-96 rounded-full bg-secondary/5 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 -left-32 w-80 h-80 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full">
-          {projects.length > 0
-            ? projects.map((p: any) => (
-                <ProjectsComponent
-                  key={p.id}
-                  description={p.description}
-                  languages={p.languages}
-                  title={p.title}
-                  url={p.url}
-                  urlRepository={p.urlRepository}
-                  imageUrl={(p as any).imageUrl}
-                />
-              ))
-            : null}
+        <div className="relative max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="inline-block text-secondary font-bold text-xs uppercase tracking-[0.3em] mb-3">
+              Portfolio
+            </span>
+            <h2 className="font-primary text-4xl md:text-5xl font-bold text-primary">
+              Projetos
+            </h2>
+            <div className="w-16 h-1 bg-secondary mx-auto mt-4 rounded-full" />
+            <p className="text-dark-gray/50 mt-4 max-w-md mx-auto font-secondary text-sm">
+              Projetos que desenvolvi ao longo da minha trajetória
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+            {projects.length > 0
+              ? projects.map((p: any) => (
+                  <ProjectsComponent
+                    key={p.id}
+                    description={p.description}
+                    languages={p.languages}
+                    title={p.title}
+                    url={p.url}
+                    urlRepository={p.urlRepository}
+                    imageUrl={(p as any).imageUrl}
+                  />
+                ))
+              : null}
+          </div>
         </div>
       </section>
 
