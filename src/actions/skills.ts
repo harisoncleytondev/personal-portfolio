@@ -26,6 +26,34 @@ export async function createSkill(data: { name: string; description: string; ima
   return { success: true } as const;
 }
 
+export async function updateSkill(id: string, data: { name?: string; description?: string; image?: string }) {
+  if (!(await verifyAuth())) {
+    return { success: false, error: "Não autorizado." } as const;
+  }
+
+  const existing = await prisma.skills.findUnique({ where: { id } });
+  if (!existing) {
+    return { success: false, error: "Habilidade não encontrada." } as const;
+  }
+
+  let image = existing.image;
+
+  if (data.image && data.image.length > 100) {
+    if (existing.image && existing.image.length < 200) {
+      await deleteFile(existing.image).catch(() => {});
+    }
+    image = await uploadBase64(data.image, "skill");
+  }
+
+  await prisma.skills.update({
+    where: { id },
+    data: { name: data.name, description: data.description, image } as any,
+  });
+
+  revalidateTag("loading-infos", "max");
+  return { success: true } as const;
+}
+
 export async function deleteSkill(id: string) {
   if (!(await verifyAuth())) {
     return { success: false, error: "Não autorizado." } as const;

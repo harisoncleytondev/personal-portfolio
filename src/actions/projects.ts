@@ -33,6 +33,35 @@ export async function createProject(data: Record<string, unknown>) {
   return { success: true } as const;
 }
 
+export async function updateProject(id: string, data: Record<string, unknown>) {
+  if (!(await verifyAuth())) {
+    return { success: false, error: "Não autorizado." } as const;
+  }
+
+  const existing = await prisma.project.findUnique({ where: { id } });
+  if (!existing) {
+    return { success: false, error: "Projeto não encontrado." } as const;
+  }
+
+  const { image: imageBase64, ...projectData } = data;
+  let image = existing.image;
+
+  if (imageBase64 && typeof imageBase64 === "string" && imageBase64.length > 100) {
+    if (existing.image && existing.image.length < 200) {
+      await deleteFile(existing.image).catch(() => {});
+    }
+    image = await uploadBase64(imageBase64, "project");
+  }
+
+  await prisma.project.update({
+    where: { id },
+    data: { ...projectData, image } as any,
+  });
+
+  revalidateTag("loading-infos", "max");
+  return { success: true } as const;
+}
+
 export async function deleteProject(id: string) {
   if (!(await verifyAuth())) {
     return { success: false, error: "Não autorizado." } as const;

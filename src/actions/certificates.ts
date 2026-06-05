@@ -15,6 +15,25 @@ export async function createCertificate(data: Record<string, unknown>) {
   return { success: true } as const;
 }
 
+export async function updateCertificate(id: string, data: Record<string, unknown>) {
+  if (!(await verifyAuth())) {
+    return { success: false, error: "Não autorizado." } as const;
+  }
+
+  const existing = await prisma.certificates.findUnique({ where: { id } });
+  if (!existing) {
+    return { success: false, error: "Certificado não encontrado." } as const;
+  }
+
+  await prisma.certificates.update({
+    where: { id },
+    data: data as any,
+  });
+
+  revalidateTag("loading-infos", "max");
+  return { success: true } as const;
+}
+
 export async function deleteCertificate(id: string) {
   if (!(await verifyAuth())) {
     return { success: false, error: "Não autorizado." } as const;

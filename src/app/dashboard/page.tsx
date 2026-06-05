@@ -8,6 +8,7 @@ import {
   FaSave,
   FaTrash,
   FaPlus,
+  FaPen,
   FaProjectDiagram,
   FaCode,
   FaCertificate,
@@ -26,15 +27,16 @@ import { useLoading } from "@/hooks/useLoading";
 import { useQueryClient } from "@tanstack/react-query";
 import { NextRequestDeleteDTO } from "@/types/dtos";
 import { toast } from "sonner";
-import { createProject as createProjectAction, deleteProject as deleteProjectAction } from "@/actions/projects";
-import { createSkill as createSkillAction, deleteSkill as deleteSkillAction } from "@/actions/skills";
+import { createProject as createProjectAction, updateProject as updateProjectAction, deleteProject as deleteProjectAction } from "@/actions/projects";
+import { createSkill as createSkillAction, updateSkill as updateSkillAction, deleteSkill as deleteSkillAction } from "@/actions/skills";
 import { saveSettings as saveSettingsAction, toggleMaintenance } from "@/actions/settings";
-import { createCertificate as createCertificateAction, deleteCertificate as deleteCertificateAction } from "@/actions/certificates";
+import { createCertificate as createCertificateAction, updateCertificate as updateCertificateAction, deleteCertificate as deleteCertificateAction } from "@/actions/certificates";
 import { reorderItems } from "@/actions/reorder";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("settings");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<any | null>(null);
   const [orderedProjects, setOrderedProjects] = useState<any[]>([]);
   const [orderedSkills, setOrderedSkills] = useState<any[]>([]);
   const [orderedCertificates, setOrderedCertificates] = useState<any[]>([]);
@@ -288,6 +290,134 @@ export default function Dashboard() {
     }
   };
 
+  const openCreateModal = () => {
+    setEditingItem(null);
+    projectForm.reset();
+    skillForm.reset();
+    certificateForm.reset();
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (item: any, type: string) => {
+    setEditingItem(item);
+    if (type === "project") {
+      projectForm.reset({
+        title: item.title,
+        description: item.description,
+        url: item.url,
+        urlRepository: item.urlRepository,
+        technologies: (item.languages || []).join(", "),
+      });
+    } else if (type === "skill") {
+      skillForm.reset({
+        name: item.name,
+        description: item.description,
+      });
+    } else if (type === "certificate") {
+      certificateForm.reset({
+        title: item.title,
+        institution: item.institution || "",
+        description: item.description || "",
+        issuedAt: item.issuedAt ? item.issuedAt.split("T")[0] : "",
+        languages: (item.languages || []).join(", "),
+        credentialUrl: item.credentialUrl || "",
+        completed: item.completed ?? true,
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleUpdateProject = async (formData: ProjectFormValues) => {
+    if (!editingItem) return;
+    setIsModalOpen(false);
+
+    const toastId = toast.loading("Atualizando projeto...");
+    const file = formData.image?.[0];
+    const { technologies, image: _imageFile, ...rest } = formData;
+    const techList = technologies
+      .split(",")
+      .map((tech) => tech.trim())
+      .filter((t) => t !== "");
+
+    const submitUpdate = async (payload: any) => {
+      const result = await updateProjectAction(editingItem.id, payload);
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+        toast.success("Projeto atualizado com sucesso!", { id: toastId });
+      } else {
+        toast.error(result.error || "Erro ao atualizar projeto.", { id: toastId });
+      }
+    };
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = (reader.result as string).split(",")[1];
+        await submitUpdate({ ...rest, languages: techList, image: base64String });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      await submitUpdate({ ...rest, languages: techList });
+    }
+  };
+
+  const handleUpdateSkill = async (formData: SkillFormValues) => {
+    if (!editingItem) return;
+    setIsModalOpen(false);
+
+    const toastId = toast.loading("Atualizando habilidade...");
+    const file = formData.image?.[0];
+    const { image: _, ...restData } = formData;
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = (reader.result as string).split(",")[1];
+        const result = await updateSkillAction(editingItem.id, { ...restData, image: base64String });
+        if (result.success) {
+          queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+          toast.success("Habilidade atualizada com sucesso!", { id: toastId });
+        } else {
+          toast.error(result.error || "Erro ao atualizar habilidade.", { id: toastId });
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const result = await updateSkillAction(editingItem.id, restData);
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+        toast.success("Habilidade atualizada com sucesso!", { id: toastId });
+      } else {
+        toast.error(result.error || "Erro ao atualizar habilidade.", { id: toastId });
+      }
+    }
+  };
+
+  const handleUpdateCertificate = async (formData: CertificateFormValues) => {
+    if (!editingItem) return;
+    setIsModalOpen(false);
+
+    const toastId = toast.loading("Atualizando certificado...");
+    const langList = formData.languages
+      ? formData.languages.split(",").map((lang) => lang.trim()).filter(Boolean)
+      : [];
+    const date = formData.issuedAt ? new Date(formData.issuedAt) : new Date();
+
+    const result = await updateCertificateAction(editingItem.id, {
+      ...formData,
+      languages: langList,
+      issuedAt: date,
+      credentialUrl: formData.credentialUrl || undefined,
+    } as any);
+
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+      toast.success("Certificado atualizado com sucesso!", { id: toastId });
+    } else {
+      toast.error(result.error || "Erro ao atualizar certificado.", { id: toastId });
+    }
+  };
+
   const handleDragStart = useCallback((index: number, type: string) => {
     dragItem.current = { index, type };
   }, []);
@@ -493,7 +623,7 @@ export default function Dashboard() {
 
           {activeTab !== "settings" && (
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={openCreateModal}
               className="mb-6 bg-[#7c3aed] text-[#e8e8ed] px-4 py-2.5 hover:bg-[#6d28d9] active:scale-[0.97] transition-all flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em]"
             >
               <FaPlus /> Adicionar{" "}
@@ -539,6 +669,12 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <button
+                    onClick={() => openEditModal(p, "project")}
+                    className="self-stretch px-3 text-[#555570] hover:text-[#7c3aed] hover:bg-[#7c3aed]/10 transition-colors flex items-center text-xs"
+                  >
+                    <FaPen />
+                  </button>
+                  <button
                     onClick={() => handleDeleteProject({ id: p.id })}
                     className="self-stretch px-4 text-[#555570] hover:text-red-400 hover:bg-red-500/10 transition-colors flex items-center text-xs"
                   >
@@ -580,6 +716,12 @@ export default function Dashboard() {
                     </div>
                     <p className="font-mono text-[11px] text-[#8888a0] truncate">{s.description}</p>
                   </div>
+                  <button
+                    onClick={() => openEditModal(s, "skill")}
+                    className="self-stretch px-3 text-[#555570] hover:text-[#7c3aed] hover:bg-[#7c3aed]/10 transition-colors flex items-center text-xs"
+                  >
+                    <FaPen />
+                  </button>
                   <button
                     onClick={() => handleDeleteSkill({ id: s.id })}
                     className="self-stretch px-4 text-[#555570] hover:text-red-400 hover:bg-red-500/10 transition-colors flex items-center text-xs"
@@ -637,6 +779,12 @@ export default function Dashboard() {
                     )}
                   </div>
                   <button
+                    onClick={() => openEditModal(c, "certificate")}
+                    className="self-stretch px-3 text-[#555570] hover:text-[#7c3aed] hover:bg-[#7c3aed]/10 transition-colors flex items-center text-xs"
+                  >
+                    <FaPen />
+                  </button>
+                  <button
                     onClick={() => handleDeleteCertificate({ id: c.id })}
                     className="self-stretch px-4 text-[#555570] hover:text-red-400 hover:bg-red-500/10 transition-colors flex items-center text-xs"
                   >
@@ -655,9 +803,9 @@ export default function Dashboard() {
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#2a2a40] bg-[#0f0f1a]">
               <h3 className="font-mono text-sm text-[#e8e8ed] uppercase tracking-[0.1em]">
                 <span className="text-[#7c3aed]">$</span>{" "}
-                {activeTab === "projects" && "./create_project.sh"}
-                {activeTab === "skills" && "./create_skill.sh"}
-                {activeTab === "certificates" && "./create_certificate.sh"}
+                {activeTab === "projects" && (editingItem ? "./edit_project.sh" : "./create_project.sh")}
+                {activeTab === "skills" && (editingItem ? "./edit_skill.sh" : "./create_skill.sh")}
+                {activeTab === "certificates" && (editingItem ? "./edit_certificate.sh" : "./create_certificate.sh")}
               </h3>
               <button onClick={() => setIsModalOpen(false)} className="text-[#555570] hover:text-[#e8e8ed] transition-colors">
                 <FaTimes />
@@ -666,7 +814,7 @@ export default function Dashboard() {
 
             <div className="p-6 flex flex-col gap-4">
               {activeTab === "projects" && (
-                <form onSubmit={projectForm.handleSubmit(handleCreateProject)} className="flex flex-col gap-4">
+                <form onSubmit={projectForm.handleSubmit(editingItem ? handleUpdateProject : handleCreateProject)} className="flex flex-col gap-4">
                   <input {...projectForm.register("title", { required: true })} placeholder="Título *" className={inputClass} />
                   <textarea {...projectForm.register("description", { required: true })} placeholder="Descrição *" rows={4} className={`${inputClass} resize-none`} />
                   <input {...projectForm.register("technologies", { required: true })} placeholder="Tecnologias (separar por vírgula) *" className={inputClass} />
@@ -674,24 +822,24 @@ export default function Dashboard() {
                   <input {...projectForm.register("urlRepository")} placeholder="URL Repositório" className={inputClass} />
                   <input type="file" accept="image/*" {...projectForm.register("image")} className={fileInputClass} />
                   <button className="bg-[#7c3aed] text-[#e8e8ed] py-3 hover:bg-[#6d28d9] active:scale-[0.97] transition-all font-mono text-[10px] uppercase tracking-[0.15em]">
-                    Salvar
+                    {editingItem ? "Atualizar" : "Salvar"}
                   </button>
                 </form>
               )}
 
               {activeTab === "skills" && (
-                <form onSubmit={skillForm.handleSubmit(handleCreateSkill)} className="flex flex-col gap-4">
+                <form onSubmit={skillForm.handleSubmit(editingItem ? handleUpdateSkill : handleCreateSkill)} className="flex flex-col gap-4">
                   <input {...skillForm.register("name", { required: true })} placeholder="Nome *" className={inputClass} />
                   <textarea {...skillForm.register("description", { required: true })} placeholder="Descrição *" rows={3} className={`${inputClass} resize-none`} />
-                  <input type="file" {...skillForm.register("image", { required: true })} className={fileInputClass} />
+                  <input type="file" {...skillForm.register("image")} className={fileInputClass} />
                   <button className="bg-[#7c3aed] text-[#e8e8ed] py-3 hover:bg-[#6d28d9] active:scale-[0.97] transition-all font-mono text-[10px] uppercase tracking-[0.15em]">
-                    Salvar
+                    {editingItem ? "Atualizar" : "Salvar"}
                   </button>
                 </form>
               )}
 
               {activeTab === "certificates" && (
-                <form onSubmit={certificateForm.handleSubmit(handleCreateCertificate)} className="flex flex-col gap-4">
+                <form onSubmit={certificateForm.handleSubmit(editingItem ? handleUpdateCertificate : handleCreateCertificate)} className="flex flex-col gap-4">
                   <input {...certificateForm.register("title", { required: true })} placeholder="Título *" className={inputClass} />
                   <input {...certificateForm.register("institution", { required: true })} placeholder="Instituição *" className={inputClass} />
                   <textarea {...certificateForm.register("description")} placeholder="Descrição" rows={3} className={`${inputClass} resize-none`} />
@@ -703,7 +851,7 @@ export default function Dashboard() {
                     Concluído
                   </label>
                   <button className="bg-[#7c3aed] text-[#e8e8ed] py-3 hover:bg-[#6d28d9] active:scale-[0.97] transition-all font-mono text-[10px] uppercase tracking-[0.15em]">
-                    Salvar
+                    {editingItem ? "Atualizar" : "Salvar"}
                   </button>
                 </form>
               )}
