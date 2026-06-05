@@ -111,7 +111,7 @@ export const FooterComponent = ({ email, phone, instagram, github, linkedin }: F
 
         <div className="mt-16 pt-6 border-t border-[#1a1a28] text-center">
           <p className="font-mono text-[10px] text-[#555570]">
-            <span className="text-[#7c3aed]">©</span> {new Date().getFullYear()} — built with Next.js, Prisma & MinIO
+            <span className="text-[#7c3aed]">©</span> {new Date().getFullYear()} — Até mais leitor curioso
             <span className="animate-cursor-blink text-[#e8e8ed]"> ▌</span>
           </p>
         </div>
