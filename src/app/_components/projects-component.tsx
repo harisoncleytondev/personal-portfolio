@@ -83,6 +83,7 @@ export const ProjectsComponent = ({
   url,
   urlRepository,
   languages = [],
+  imageUrl,
   index,
 }: ProjectsComponentProps) => {
   const isEven = index % 2 === 0;
@@ -96,27 +97,42 @@ export const ProjectsComponent = ({
             isEven ? "lg:order-1" : "lg:order-2"
           }`}
         >
-          <div className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0a0a12] border-b border-[#1a1a28]">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-            <span className="ml-2 text-[10px] text-[#555570] font-mono">terminal — {title.toLowerCase().replace(/\s+/g, "-")}</span>
-          </div>
-
-          <div className="p-4 font-mono text-[11px] leading-relaxed overflow-hidden h-[calc(100%-36px)]">
-            <pre className="text-[#22c55e] whitespace-pre-wrap m-0">
-              <span className="text-[#555570]">$ </span>
-              <span className="text-[#e8e8ed]">cat ./arch/{title.toLowerCase().replace(/\s+/g, "-")}.api</span>
-              {"\n\n"}
-              <code>{snippet}</code>
-              {"\n\n"}
-              <span className="text-[#555570]">$ </span>
-              <span className="text-[#e8e8ed]">curl -s https://api.harisoncleyton.tech/health</span>
-              {"\n"}
-              <span className="text-[#22c55e]">✓ 200 OK</span>
-              <span className="animate-cursor-blink text-[#e8e8ed]">▌</span>
-            </pre>
-          </div>
+          {imageUrl ? (
+            <div className="w-full h-full">
+              <div className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0a0a12] border-b border-[#1a1a28]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+                <span className="ml-2 text-[10px] text-[#555570] font-mono">preview — {title.toLowerCase().replace(/\s+/g, "-")}</span>
+              </div>
+              <div className="w-full h-[calc(100%-36px)] bg-[#08080e]">
+                <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0a0a12] border-b border-[#1a1a28]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+                <span className="ml-2 text-[10px] text-[#555570] font-mono">terminal — {title.toLowerCase().replace(/\s+/g, "-")}</span>
+              </div>
+              <div className="p-4 font-mono text-[11px] leading-relaxed overflow-hidden h-[calc(100%-36px)]">
+                <pre className="text-[#22c55e] whitespace-pre-wrap m-0">
+                  <span className="text-[#555570]">$ </span>
+                  <span className="text-[#e8e8ed]">cat ./arch/{title.toLowerCase().replace(/\s+/g, "-")}.api</span>
+                  {"\n\n"}
+                  <code>{snippet}</code>
+                  {"\n\n"}
+                  <span className="text-[#555570]">$ </span>
+                  <span className="text-[#e8e8ed]">curl -s https://api.harisoncleyton.tech/health</span>
+                  {"\n"}
+                  <span className="text-[#22c55e]">✓ 200 OK</span>
+                  <span className="animate-cursor-blink text-[#e8e8ed]">▌</span>
+                </pre>
+              </div>
+            </>
+          )}
         </div>
 
         <div
