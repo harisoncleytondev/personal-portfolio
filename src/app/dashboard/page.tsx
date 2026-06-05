@@ -22,14 +22,14 @@ import {
   FaFileAlt,
 } from "react-icons/fa";
 import { SidebarButtonComponent } from "./_components/sidebar-button-component";
-import { createSkill, deleteSkill } from "@/hooks/useSkills";
 import { useLoading } from "@/hooks/useLoading";
 import { useQueryClient } from "@tanstack/react-query";
-import { createProject, deleteProject } from "@/hooks/useProjects";
-import { createCertificate, deleteCertificate } from "@/hooks/useCertificates";
 import { NextRequestDeleteDTO } from "@/types/dtos";
-import { saveSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
+import { createProject as createProjectAction, deleteProject as deleteProjectAction } from "@/actions/projects";
+import { createSkill as createSkillAction, deleteSkill as deleteSkillAction } from "@/actions/skills";
+import { saveSettings as saveSettingsAction } from "@/actions/settings";
+import { createCertificate as createCertificateAction, deleteCertificate as deleteCertificateAction } from "@/actions/certificates";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("settings");
@@ -98,16 +98,6 @@ export default function Dashboard() {
   const skillForm = useForm<SkillFormValues>();
   const certificateForm = useForm<CertificateFormValues>();
 
-  const { mutate: saveSetts } = saveSettings();
-
-  const { mutate: postSkill } = createSkill();
-  const { mutate: postProject } = createProject();
-  const { mutate: postCertificate } = createCertificate();
-
-  const { mutate: delCertificate } = deleteCertificate();
-  const { mutate: delSkill } = deleteSkill();
-  const { mutate: delProject } = deleteProject();
-
   const queryClient = useQueryClient();
 
   const inputClass =
@@ -115,40 +105,35 @@ export default function Dashboard() {
   const fileInputClass =
     "w-full bg-[var(--color-card)] p-2 rounded border border-gray/10 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-secondary/10 file:text-secondary hover:file:bg-secondary/20 text-dark-gray";
 
-  const handleSaveSettings = (data: SettingsFormValues) => {
+  const handleSaveSettings = async (data: SettingsFormValues) => {
     const file = data.cv && data.cv.length > 0 ? data.cv[0] : null;
+    const toastId = toast.loading("Salvando configurações...");
 
-    const submitData = (payload: any) => {
-      const toastId = toast.loading("Salvando configurações...");
-      saveSetts(payload, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["query-loading-infos"],
-          });
-          toast.success("Configurações salvas com sucesso!", { id: toastId });
-        },
-        onError: () => {
-          toast.error("Erro ao salvar configurações.", { id: toastId });
-        },
-      });
+    const submitData = async (payload: any) => {
+      const result = await saveSettingsAction(payload);
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+        toast.success("Configurações salvas com sucesso!", { id: toastId });
+      } else {
+        toast.error(result.error || "Erro ao salvar configurações.", { id: toastId });
+      }
     };
 
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const base64String = (reader.result as string)?.split(",")[1];
-
         const { cv, ...rest } = data;
-        submitData({ ...rest, cv: base64String });
+        await submitData({ ...rest, cv: base64String });
       };
       reader.readAsDataURL(file);
     } else {
       const { cv, ...rest } = data;
-      submitData(rest);
+      await submitData(rest);
     }
   };
 
-  const handleCreateProject = (data: ProjectFormValues) => {
+  const handleCreateProject = async (data: ProjectFormValues) => {
     setIsModalOpen(false);
 
     const toastId = toast.loading("Criando projeto...");
@@ -159,50 +144,41 @@ export default function Dashboard() {
       .map((tech) => tech.trim())
       .filter((t) => t !== "");
 
-    const submitProject = (payload: any) => {
-      postProject(payload as any, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["query-loading-infos"],
-          });
-          projectForm.reset();
-          toast.success("Projeto criado com sucesso!", { id: toastId });
-        },
-        onError: () => {
-          toast.error("Erro ao criar projeto.", { id: toastId });
-        },
-      });
+    const submitProject = async (payload: any) => {
+      const result = await createProjectAction(payload);
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+        projectForm.reset();
+        toast.success("Projeto criado com sucesso!", { id: toastId });
+      } else {
+        toast.error(result.error || "Erro ao criar projeto.", { id: toastId });
+      }
     };
 
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const base64String = (reader.result as string).split(",")[1];
-        submitProject({ ...rest, languages: techList, image: base64String });
+        await submitProject({ ...rest, languages: techList, image: base64String });
       };
       reader.readAsDataURL(file);
     } else {
-      submitProject({ ...rest, languages: techList });
+      await submitProject({ ...rest, languages: techList });
     }
   };
 
-  const handleDeleteProject = (data: NextRequestDeleteDTO) => {
+  const handleDeleteProject = async (data: NextRequestDeleteDTO) => {
     const toastId = toast.loading("Deletando projeto...");
-
-    delProject(data, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["query-loading-infos"],
-        });
-        toast.success("Projeto deletado com sucesso!", { id: toastId });
-      },
-      onError: () => {
-        toast.error("Erro ao deletar projeto.", { id: toastId });
-      },
-    });
+    const result = await deleteProjectAction(data.id);
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+      toast.success("Projeto deletado com sucesso!", { id: toastId });
+    } else {
+      toast.error(result.error || "Erro ao deletar projeto.", { id: toastId });
+    }
   };
 
-  const handleCreateSkill = (data: SkillFormValues) => {
+  const handleCreateSkill = async (data: SkillFormValues) => {
     setIsModalOpen(false);
     const file = data.image?.[0];
     if (!file) return;
@@ -210,50 +186,39 @@ export default function Dashboard() {
     const toastId = toast.loading("Criando habilidade...");
     const reader = new FileReader();
 
-    reader.onloadend = () => {
+    reader.onloadend = async () => {
       const base64String = (reader.result as string).split(",")[1];
       const { image: _, ...restData } = data;
 
-      postSkill(
-        {
-          ...restData,
-          image: base64String,
-        } as any,
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: ["query-loading-infos"],
-            });
-            skillForm.reset();
-            toast.success("Habilidade criada com sucesso!", { id: toastId });
-          },
-          onError: () => {
-            toast.error("Erro ao criar habilidade.", { id: toastId });
-          },
-        }
-      );
+      const result = await createSkillAction({
+        ...restData,
+        image: base64String,
+      } as any);
+
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+        skillForm.reset();
+        toast.success("Habilidade criada com sucesso!", { id: toastId });
+      } else {
+        toast.error(result.error || "Erro ao criar habilidade.", { id: toastId });
+      }
     };
 
     reader.readAsDataURL(file);
   };
 
-  const handleDeleteSkill = (data: NextRequestDeleteDTO) => {
+  const handleDeleteSkill = async (data: NextRequestDeleteDTO) => {
     const toastId = toast.loading("Deletando habilidade...");
-
-    delSkill(data, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["query-loading-infos"],
-        });
-        toast.success("Habilidade deletada com sucesso!", { id: toastId });
-      },
-      onError: () => {
-        toast.error("Erro ao deletar habilidade.", { id: toastId });
-      },
-    });
+    const result = await deleteSkillAction(data.id);
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+      toast.success("Habilidade deletada com sucesso!", { id: toastId });
+    } else {
+      toast.error(result.error || "Erro ao deletar habilidade.", { id: toastId });
+    }
   };
 
-  const handleCreateCertificate = (data: CertificateFormValues) => {
+  const handleCreateCertificate = async (data: CertificateFormValues) => {
     setIsModalOpen(false);
     const toastId = toast.loading("Criando certificado...");
 
@@ -266,42 +231,31 @@ export default function Dashboard() {
 
     const date = data.issuedAt ? new Date(data.issuedAt) : new Date();
 
-    postCertificate(
-      {
-        ...data,
-        languages: langList,
-        issuedAt: date,
-        credentialUrl: data.credentialUrl || undefined,
-      } as any,
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["query-loading-infos"],
-          });
-          certificateForm.reset();
-          toast.success("Certificado criado com sucesso!", { id: toastId });
-        },
-        onError: () => {
-          toast.error("Erro ao criar certificado.", { id: toastId });
-        },
-      }
-    );
+    const result = await createCertificateAction({
+      ...data,
+      languages: langList,
+      issuedAt: date,
+      credentialUrl: data.credentialUrl || undefined,
+    } as any);
+
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+      certificateForm.reset();
+      toast.success("Certificado criado com sucesso!", { id: toastId });
+    } else {
+      toast.error(result.error || "Erro ao criar certificado.", { id: toastId });
+    }
   };
 
-  const handleDeleteCertificate = (data: NextRequestDeleteDTO) => {
+  const handleDeleteCertificate = async (data: NextRequestDeleteDTO) => {
     const toastId = toast.loading("Deletando certificado...");
-
-    delCertificate(data, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["query-loading-infos"],
-        });
-        toast.success("Certificado deletado com sucesso!", { id: toastId });
-      },
-      onError: () => {
-        toast.error("Erro ao deletar certificado.", { id: toastId });
-      },
-    });
+    const result = await deleteCertificateAction(data.id);
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ["query-loading-infos"] });
+      toast.success("Certificado deletado com sucesso!", { id: toastId });
+    } else {
+      toast.error(result.error || "Erro ao deletar certificado.", { id: toastId });
+    }
   };
 
   const { mutate: logout } = useLogout();
