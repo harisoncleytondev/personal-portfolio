@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { NavbarComponent } from "./_components/navbar-component";
 import { ProjectsComponent } from "./_components/projects-component";
 import { SkillsComponent } from "./_components/skills-component";
@@ -7,9 +8,11 @@ import { CertificatesComponent } from "./_components/certificates-component";
 import { FooterComponent } from "./_components/footer-component";
 import { TitleComponent } from "./_components/title-component";
 import { useLoading } from "@/hooks/useLoading";
+import { FaChevronDown } from "react-icons/fa";
 
 const Home = () => {
   const { data, isLoading } = useLoading();
+  const [visibleProjects, setVisibleProjects] = useState(2);
 
   const HeroSection = () => (
     <section
@@ -136,11 +139,12 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          <div className="flex flex-col gap-8 max-w-5xl mx-auto">
             {projects.length > 0
-              ? projects.map((p: any) => (
+              ? projects.slice(0, visibleProjects).map((p: any, i: number) => (
                   <ProjectsComponent
                     key={p.id}
+                    index={i}
                     description={p.description}
                     languages={p.languages}
                     title={p.title}
@@ -151,6 +155,18 @@ const Home = () => {
                 ))
               : null}
           </div>
+
+          {visibleProjects < projects.length && (
+            <div className="flex justify-center mt-12">
+              <button
+                onClick={() => setVisibleProjects((prev) => prev + 1)}
+                className="group inline-flex items-center gap-2 px-8 py-3 bg-white border-2 border-secondary/20 text-secondary font-primary font-bold text-xs uppercase tracking-[0.2em] rounded-full hover:bg-secondary hover:text-white hover:border-secondary hover:-translate-y-0.5 transition-all shadow-sm"
+              >
+                <FaChevronDown className="text-[10px] group-hover:animate-bounce" />
+                Carregar mais projeto
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
